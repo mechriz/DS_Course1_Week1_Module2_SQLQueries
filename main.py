@@ -46,14 +46,14 @@ df_hungry = pd.read_sql("""
     SELECT name, age, breed
     FROM dogs
     WHERE hungry = 1 
-    ORDER BY age
+    ORDER BY age ASC
 """, conn2)
 
 df_hungry_ages = pd.read_sql("""
     SELECT name, age, hungry
     FROM dogs
     WHERE age BETWEEN 2 AND 7 AND hungry = 1
-    ORDER BY name
+    ORDER BY name ASC
 """, conn2)
 
 df_4_oldest = pd.read_sql("""
