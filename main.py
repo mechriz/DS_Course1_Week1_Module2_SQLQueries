@@ -1,0 +1,105 @@
+import pandas as pd
+import sqlite3
+
+# -------------------------
+# PLANETS DB
+# -------------------------
+conn1 = sqlite3.connect('planets.db')
+
+df_no_moons = pd.read_sql("""
+    SELECT *
+    FROM planets
+    WHERE num_of_moons = 0
+""", conn1)
+
+df_name_seven = pd.read_sql("""
+    SELECT name, mass
+    FROM planets
+    WHERE LENGTH(name)=7
+""", conn1)
+
+df_mass = pd.read_sql("""
+    SELECT name, mass
+    FROM planets
+    WHERE mass <= 1.00
+""", conn1)
+
+df_mass_moon = pd.read_sql("""
+    SELECT *
+    FROM planets
+    WHERE num_of_moons >=1 AND mass < 1.00
+""", conn1)
+
+df_blue = pd.read_sql("""
+    SELECT name, color
+    FROM planets
+    WHERE color = 'blue'
+""", conn1)
+
+
+# -------------------------
+# DOGS DB
+# -------------------------
+conn2 = sqlite3.connect('dogs.db')
+
+df_hungry = pd.read_sql("""
+    SELECT name, age, breed
+    FROM dogs
+    WHERE hungry = 1 
+    ORDER BY age
+""", conn2)
+
+df_hungry_ages = pd.read_sql("""
+    SELECT name, age, hungry
+    FROM dogs
+    WHERE age BETWEEN 2 AND 7 AND hungry = 1
+    ORDER BY name
+""", conn2)
+
+df_4_oldest = pd.read_sql("""
+    SELECT name, age, breed
+    FROM (
+        SELECT name, age, breed
+        FROM dogs
+        ORDER BY age DESC
+        LIMIT 4
+    )
+    ORDER BY breed
+""", conn2)
+
+
+# -------------------------
+# BABE RUTH DB
+# -------------------------
+conn3 = sqlite3.connect('babe_ruth.db')
+
+df_ruth_years = pd.read_sql("""
+    SELECT COUNT(*) 
+    FROM babe_ruth_stats
+""", conn3)
+
+df_hr_total = pd.read_sql("""
+    SELECT SUM(HR) 
+    FROM babe_ruth_stats
+""", conn3)
+
+df_teams_years = pd.read_sql("""
+    SELECT team, COUNT(year) number_years
+    FROM babe_ruth_stats
+    GROUP BY team
+""", conn3)
+
+df_at_bats = pd.read_sql("""
+    SELECT team, AVG(at_bats) average_at_bats
+    FROM babe_ruth_stats
+    GROUP BY team
+    HAVING AVG(at_bats) > 200
+""" , conn3)
+
+
+# -------------------------
+# CLOSE CONNECTIONS
+# -------------------------
+conn1.close()
+conn2.close()
+conn3.close()
